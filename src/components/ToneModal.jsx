@@ -1,29 +1,13 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import { getTones } from '../pinyinData';
 
 const TonePopover = ({ pinyin, phonetic, isOpen, onClose, anchorPosition }) => {
-    const audioRefs = useRef({});
     const popoverRef = useRef(null);
+    const currentAudioRef = useRef(null);
     const [style, setStyle] = useState({});
     const [placement, setPlacement] = useState('bottom');
     const [playingTone, setPlayingTone] = useState(null);
-
-    useEffect(() => {
-        if (!pinyin || !isOpen) return;
-
-        const safePinyin = pinyin.replace('ü', 'v');
-        const newAudioRefs = {};
-        for (let i = 1; i <= 4; i++) {
-            const url = `https://cdn.yoyochinese.com/audio/pychart/${safePinyin}${i}.mp3`;
-            const audio = new Audio(url);
-            audio.preload = 'auto';
-            newAudioRefs[i] = audio;
-        }
-        audioRefs.current = newAudioRefs;
-        return () => {
-            Object.values(newAudioRefs).forEach(a => { a.pause(); a.currentTime = 0; });
-        };
-    }, [pinyin, isOpen]);
+    const [loadingTone, setLoadingTone] = useState(null);
 
     useLayoutEffect(() => {
         if (!isOpen || !anchorPosition || !popoverRef.current) return;
@@ -58,13 +42,49 @@ const TonePopover = ({ pinyin, phonetic, isOpen, onClose, anchorPosition }) => {
     const tones = getTones(pinyin);
 
     const playAudio = (toneNumber) => {
-        const audio = audioRefs.current[toneNumber];
-        if (audio) {
-            setPlayingTone(toneNumber);
-            audio.currentTime = 0;
-            audio.play().catch(e => console.error(e));
-            audio.onended = () => setPlayingTone(null);
+        // Stop any currently playing audio
+        if (currentAudioRef.current) {
+            currentAudioRef.current.pause();
+            currentAudioRef.current = null;
         }
+
+        // Convert ü to v for file naming (lü → lv, nü → nv) - audio-cmn format
+        const safePinyin = pinyin.replace('ü', 'v');
+        const url = `/Mandarin_sounds/cmn-${safePinyin}${toneNumber}.mp3`;
+
+        const audio = new Audio(url);
+        currentAudioRef.current = audio;
+
+        // Show loading state
+        setLoadingTone(toneNumber);
+        setPlayingTone(null);
+
+        // Handle when audio is ready to play
+        audio.oncanplaythrough = () => {
+            setLoadingTone(null);
+            setPlayingTone(toneNumber);
+            audio.play().catch(e => {
+                console.error('Audio playback error:', e);
+                setPlayingTone(null);
+            });
+        };
+
+        // Handle audio end
+        audio.onended = () => {
+            setPlayingTone(null);
+            currentAudioRef.current = null;
+        };
+
+        // Handle error (missing file)
+        audio.onerror = () => {
+            console.warn(`Sound file not available: ${url}`);
+            setLoadingTone(null);
+            setPlayingTone(null);
+            currentAudioRef.current = null;
+        };
+
+        // Start loading
+        audio.load();
     };
 
     const toneLabels = ['1st', '2nd', '3rd', '4th'];
@@ -81,30 +101,42 @@ const TonePopover = ({ pinyin, phonetic, isOpen, onClose, anchorPosition }) => {
                 </div>
 
                 <div className="popover-tones">
-                    {tones.slice(0, 4).map((t, index) => (
-                        <button
-                            key={index}
-                            className={`tone-btn ${playingTone === index + 1 ? 'playing' : ''}`}
-                            onClick={() => playAudio(index + 1)}
-                        >
-                            <div className="tone-info">
-                                <span className="tone-char">{t}</span>
-                                <span className="tone-label">{toneLabels[index]}</span>
-                            </div>
-                            <div className="play-btn">
-                                {playingTone === index + 1 ? (
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                        <rect x="6" y="4" width="4" height="16" rx="1" />
-                                        <rect x="14" y="4" width="4" height="16" rx="1" />
-                                    </svg>
-                                ) : (
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M8 5v14l11-7z" />
-                                    </svg>
-                                )}
-                            </div>
-                        </button>
-                    ))}
+                    {tones.slice(0, 4).map((t, index) => {
+                        const toneNum = index + 1;
+                        const isLoading = loadingTone === toneNum;
+                        const isPlaying = playingTone === toneNum;
+
+                        return (
+                            <button
+                                key={index}
+                                className={`tone-btn ${isPlaying ? 'playing' : ''} ${isLoading ? 'loading' : ''}`}
+                                onClick={() => playAudio(toneNum)}
+                                disabled={isLoading}
+                            >
+                                <div className="tone-info">
+                                    <span className="tone-char">{t}</span>
+                                    <span className="tone-label">{toneLabels[index]}</span>
+                                </div>
+                                <div className="play-btn">
+                                    {isLoading ? (
+                                        <svg className="spinner" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                                            <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+                                        </svg>
+                                    ) : isPlaying ? (
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                            <rect x="6" y="4" width="4" height="16" rx="1" />
+                                            <rect x="14" y="4" width="4" height="16" rx="1" />
+                                        </svg>
+                                    ) : (
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M8 5v14l11-7z" />
+                                        </svg>
+                                    )}
+                                </div>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         </>

@@ -112,10 +112,10 @@ export const pronunciationNotations = {
     en: { urdu: 'اَنْ', harakat: 'زبر+جزم', note: 'Schwa [ə] + n' },
     in: { urdu: 'یِنْ', harakat: 'زیر+جزم', note: 'High front + nasal' },
 
-    // === NASAL -NG FINALS (Use Noon Ghunnah ں) ===
-    ang: { urdu: 'آں', harakat: 'نون غنّہ', note: 'Velar nasal [ŋ] – no hard g' },
-    eng: { urdu: 'اَں', harakat: 'زبر+نون غنّہ', note: 'Schwa + velar nasal' },
-    ong: { urdu: 'وں', harakat: 'نون غنّہ', note: 'Rounded + velar nasal' },
+    // === NASAL -NG FINALS (Use ن + گ) ===
+    ang: { urdu: 'آنگ', harakat: 'ن+گ', note: 'Velar nasal [ŋ]' },
+    eng: { urdu: 'اَنگ', harakat: 'زبر+ن+گ', note: 'Schwa + velar nasal' },
+    ong: { urdu: 'ونگ', harakat: 'ن+گ', note: 'Rounded + velar nasal' },
 
     // === HIGH FRONT I GROUP ===
     i: { urdu: 'ی', harakat: 'زیر', note: 'High front [i]. Buzz after z/c/s/zh/ch/sh/r' },
@@ -124,9 +124,9 @@ export const pronunciationNotations = {
     ie: { urdu: 'یے', note: 'i + e' },
     iou: { urdu: 'یو', note: 'Written as -iu' },
     ian: { urdu: 'یَنْ', harakat: 'زبر+جزم', note: 'i + a + n' },
-    iang: { urdu: 'یاں', harakat: 'نون غنّہ', note: 'i + a + velar nasal' },
-    ing: { urdu: 'یں', harakat: 'نون غنّہ', note: 'i + velar nasal' },
-    iong: { urdu: 'یوں', harakat: 'نون غنّہ', note: 'i + rounded + velar nasal' },
+    iang: { urdu: 'یانگ', harakat: 'ن+گ', note: 'i + a + velar nasal' },
+    ing: { urdu: 'ینگ', harakat: 'ن+گ', note: 'i + velar nasal' },
+    iong: { urdu: 'یونگ', harakat: 'ن+گ', note: 'i + rounded + velar nasal' },
 
     // === HIGH BACK U GROUP ===
     u: { urdu: 'و', harakat: 'پیش', note: 'High back rounded [u]' },
@@ -136,8 +136,8 @@ export const pronunciationNotations = {
     uei: { urdu: 'وے', note: 'Written as -ui' },
     uan: { urdu: 'وَنْ', harakat: 'زبر+جزم', note: 'u + a + n' },
     uen: { urdu: 'وَنْ', harakat: 'زبر+جزم', note: 'Written as -un' },
-    uang: { urdu: 'واں', harakat: 'نون غنّہ', note: 'u + a + velar nasal' },
-    ueng: { urdu: 'وَں', harakat: 'نون غنّہ', note: 'u + velar nasal (rare)' },
+    uang: { urdu: 'وانگ', harakat: 'ن+گ', note: 'u + a + velar nasal' },
+    ueng: { urdu: 'وَنگ', harakat: 'ن+گ', note: 'u + velar nasal (rare)' },
 
     // === FRONT ROUNDED Ü GROUP ===
     ü: { urdu: 'یُو', harakat: 'پیش', note: 'French U – lips rounded, tongue high front' },

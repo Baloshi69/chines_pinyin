@@ -496,6 +496,48 @@ main {
   color: #ef4444;
 }
 
+/* Audio Mode Toggle */
+.audio-mode-toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 4px;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.mode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.mode-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--text);
+}
+
+.mode-btn.active {
+  background: white;
+  color: var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mode-btn svg {
+  flex-shrink: 0;
+}
+
 .popover-tones {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -571,6 +613,31 @@ main {
   background: white;
   color: var(--primary);
   animation: pulse 1.5s infinite;
+}
+
+/* Loading State */
+.tone-btn.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.tone-btn.loading .play-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Animations */
