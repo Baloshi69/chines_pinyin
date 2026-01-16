@@ -59,7 +59,7 @@ const PinyinChart = ({ language }) => {
                 <div className="pinyin-grid">
                     {/* Top Left Corner */}
                     <div className="cell corner-cell">
-                        Final \ Init
+                        {/* Empty */}
                     </div>
 
                     {/* Header Row (Initials) */}

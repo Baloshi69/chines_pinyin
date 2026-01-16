@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PinyinChart from './components/PinyinChart';
 import LanguageSelector from './components/LanguageSelector';
 
 function App() {
   const [language, setLanguage] = useState('urdu');
+
+  // Attempt to fix "hover not working until click" by ensuring window has focus
+  useEffect(() => {
+    window.focus();
+  }, []);
 
   return (
     <>

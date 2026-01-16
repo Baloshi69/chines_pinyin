@@ -218,11 +218,16 @@ main {
 .header-col,
 .header-row,
 .corner-cell {
-  background: var(--header-bg) !important;
-  color: white !important;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #f1f5f9 !important;
+  /* Slate 100 - Distinct but light */
+  color: var(--secondary) !important;
+  /* Navy Text */
+  font-weight: 800;
+  /* Bolder text */
+  border: 1px solid rgba(0, 33, 71, 0.15) !important;
+  /* Defining border */
   font-size: 0.75rem;
+  backdrop-filter: blur(8px);
 }
 
 /* Fixed First Column */
@@ -230,7 +235,8 @@ main {
   position: sticky;
   left: 0;
   z-index: 20;
-  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 0 12px rgba(0, 33, 71, 0.05);
+  /* Softer shadow */
 }
 
 /* Fixed First Row */
@@ -238,7 +244,7 @@ main {
   position: sticky;
   top: 0;
   z-index: 15;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 33, 71, 0.05);
 }
 
 /* Corner Cell */
@@ -247,22 +253,26 @@ main {
   top: 0;
   left: 0;
   z-index: 30;
-  font-size: 0.6rem;
-  background: var(--header-bg) !important;
-  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 0.8rem;
+  background: #f1f5f9 !important;
+  /* Match header tint */
+  color: var(--primary) !important;
+  box-shadow: 4px 4px 12px rgba(0, 33, 71, 0.08);
 }
 
 .header-col .phonetic-text,
-.header-row .phonetic-text,
-.corner-cell .phonetic-text {
-  color: rgba(255, 255, 255, 0.6) !important;
+.header-row .phonetic-text {
+  color: rgba(0, 33, 71, 0.6) !important;
+  /* Muted Navy for sub-text */
   font-size: 0.8rem;
 }
 
 .header-col .pinyin-text,
 .header-row .pinyin-text {
-  color: white !important;
+  color: var(--secondary) !important;
 }
+
+
 
 .empty-cell {
   background: transparent;
