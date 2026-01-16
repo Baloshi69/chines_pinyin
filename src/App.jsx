@@ -3,7 +3,7 @@ import PinyinChart from './components/PinyinChart';
 import LanguageSelector from './components/LanguageSelector';
 
 function App() {
-  const [language, setLanguage] = useState('urdu');
+  const [language, setLanguage] = useState('arabic');
 
   return (
     <>
