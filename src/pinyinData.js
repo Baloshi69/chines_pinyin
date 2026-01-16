@@ -50,70 +50,100 @@ export const displayFinalMap = {
   'uen': 'un'
 };
 
+// ============================================================================
+// "TRUE SOUND" PHONETIC ALIGNMENT SYSTEM
+// Based on IPA-driven Mandarin-to-Urdu transliteration research
+// Corrects Anglocentric errors in standard Pinyin mappings
+// ============================================================================
+
 export const pronunciationNotations = {
   initials: {
-    b: { urdu: 'ب', arabic: 'ب', note: 'Unaspirated' },
-    p: { urdu: 'پ', arabic: 'ب + هـ', note: 'Aspirated (puff of air)' },
-    m: { urdu: 'م', arabic: 'م' },
-    f: { urdu: 'ف', arabic: 'ف' },
-    d: { urdu: 'د', arabic: 'د', note: 'Unaspirated' },
-    t: { urdu: 'ت', arabic: 'ت + هـ', note: 'Aspirated' },
-    n: { urdu: 'ن', arabic: 'ن' },
-    l: { urdu: 'ل', arabic: 'ل' },
-    g: { urdu: 'ک', arabic: 'ك', note: 'Unaspirated' },
-    k: { urdu: 'کھ', arabic: 'ك + هـ', note: 'Aspirated' },
-    h: { urdu: 'ہ', arabic: 'خ / هـ', note: 'Rough h' },
-    j: { urdu: 'ج', arabic: 'ج', note: 'Tongue tip behind lower teeth' },
-    q: { urdu: 'چھ', arabic: 'ت + ش', note: 'Aspirated ch' },
-    x: { urdu: 'ش', arabic: 'ش', note: 'Light sh, tongue low' },
-    z: { urdu: 'ز', arabic: 'د + ز', note: 'Like "ds" in kids' },
-    c: { urdu: 'ت+س', arabic: 'ت + س', note: 'Like "ts" in cats (aspirated)' },
-    s: { urdu: 'س', arabic: 'س' },
-    zh: { urdu: 'ج', arabic: 'ج', note: 'Retroflex (tongue curled back)' },
-    ch: { urdu: 'چھ', arabic: 'ت + ش', note: 'Retroflex + Aspirated' },
-    sh: { urdu: 'ش', arabic: 'ش', note: 'Retroflex' },
-    r: { urdu: 'ر', arabic: 'ر', note: 'Retroflex voiced' }
+    // === STOP CONSONANTS (The Unvoicing Shift) ===
+    // Pinyin stops are UNVOICED [p, t, k] - never use voiced Urdu letters
+    b: { urdu: 'پ', ipa: '[p]', note: 'Unvoiced – NOT ب. Like "p" without air puff' },
+    p: { urdu: 'پھ', ipa: '[pʰ]', note: 'Aspirated – with puff of air' },
+    d: { urdu: 'ت', ipa: '[t]', note: 'Unvoiced – NOT د. Soft dental' },
+    t: { urdu: 'تھ', ipa: '[tʰ]', note: 'Aspirated' },
+    g: { urdu: 'ک', ipa: '[k]', note: 'Unvoiced – NOT گ' },
+    k: { urdu: 'کھ', ipa: '[kʰ]', note: 'Aspirated' },
+
+    // === OTHER CONSONANTS ===
+    m: { urdu: 'م', ipa: '[m]' },
+    f: { urdu: 'ف', ipa: '[f]' },
+    n: { urdu: 'ن', ipa: '[n]' },
+    l: { urdu: 'ل', ipa: '[l]' },
+    h: { urdu: 'خ', ipa: '[x]', note: 'Soft خ – more friction than ہ' },
+
+    // === ALVEOLO-PALATAL (Soft/Front – tongue tip DOWN) ===
+    j: { urdu: 'چ', ipa: '[tɕ]', type: 'soft', note: 'Soft – keep tongue tip behind lower teeth' },
+    q: { urdu: 'چھ', ipa: '[tɕʰ]', type: 'soft', note: 'Soft Aspirated – tongue tip down, puff of air' },
+    x: { urdu: 'ش', ipa: '[ɕ]', type: 'soft', note: 'Soft/Hissing – spread lips like smiling' },
+
+    // === DENTAL SIBILANTS ===
+    z: { urdu: 'ز', ipa: '[ts]', note: 'Like "ds" in kids – unvoiced' },
+    c: { urdu: 'تس', ipa: '[tsʰ]', note: 'Like "ts" in cats – aspirated' },
+    s: { urdu: 'س', ipa: '[s]' },
+
+    // === RETROFLEX (Hard – curl tongue BACK) ===
+    zh: { urdu: 'چ', ipa: '[tʂ]', type: 'hard', note: 'Hard/Retroflex – curl tongue back' },
+    ch: { urdu: 'چھ', ipa: '[tʂʰ]', type: 'hard', note: 'Retroflex Aspirated – curl tongue + puff air' },
+    sh: { urdu: 'ش', ipa: '[ʂ]', type: 'hard', note: 'Retroflex – curl tongue, round lips' },
+    r: { urdu: 'ژ', ipa: '[ɻ]', type: 'hard', note: 'Buzzing ژ – NOT rolling ر' }
   },
   finals: {
-    a: { urdu: 'آ', arabic: 'ا' },
-    o: { urdu: 'او', arabic: 'و' },
-    e: { urdu: 'اَ', arabic: 'ـَـ' },
-    ai: { urdu: 'آئی', arabic: 'أي' },
-    ei: { urdu: 'اے', arabic: 'أي' },
-    ao: { urdu: 'آؤ', arabic: 'أو' },
-    ou: { urdu: 'اوُ', arabic: 'أو' },
-    an: { urdu: 'ان', arabic: 'ان' },
-    en: { urdu: 'ن', arabic: 'ن' },
-    ang: { urdu: 'انگ', arabic: 'انغ' },
-    eng: { urdu: 'نگ', arabic: 'نغ' },
-    ong: { urdu: 'ونگ', arabic: 'ونغ' },
-    er: { urdu: 'ار', arabic: 'أر' },
-    // i group
-    i: { urdu: 'ی', arabic: 'ي', note: 'Buzz sound after z,c,s,zh,ch,sh,r' },
-    ia: { urdu: 'یا', arabic: 'يا' },
-    iao: { urdu: 'یاو', arabic: 'ياو' },
-    ie: { urdu: 'یے', arabic: 'يي' },
-    iou: { urdu: 'یو', arabic: 'يو', note: 'Written as iu' },
-    ian: { urdu: 'یان', arabic: 'يان' },
-    in: { urdu: 'ین', arabic: 'ين' },
-    iang: { urdu: 'یانگ', arabic: 'يانغ' },
-    ing: { urdu: 'ینگ', arabic: 'ينغ' },
-    iong: { urdu: 'یونگ', arabic: 'يونغ' },
-    // u group
-    u: { urdu: 'و', arabic: 'و' },
-    ua: { urdu: 'وا', arabic: 'وا' },
-    uo: { urdu: 'وو', arabic: 'وو' },
-    uai: { urdu: 'وائی', arabic: 'واي' },
-    uei: { urdu: 'وے', arabic: 'وي', note: 'Written as ui' },
-    uan: { urdu: 'وان', arabic: 'وان' },
-    uen: { urdu: 'ون', arabic: 'ون', note: 'Written as un' },
-    uang: { urdu: 'وانگ', arabic: 'وانغ' },
-    ueng: { urdu: 'ونگ', arabic: 'ونغ' },
-    // ü group
-    ü: { urdu: 'ُیو', arabic: 'ي + و', note: 'French U, lips rounded' },
-    üe: { urdu: 'ُیے', arabic: 'ي+و+ي' },
-    üan: { urdu: 'ُیان', arabic: 'يوان' },
-    ün: { urdu: 'ُین', arabic: 'يون' }
+    // === OPEN VOWEL ===
+    a: { urdu: 'آ', harakat: 'مدّہ', note: 'Open [a] – use Madda' },
+
+    // === DIPHTHONGS ===
+    ai: { urdu: 'آئی', note: 'a + i glide' },
+    ao: { urdu: 'آؤ', note: 'a + o glide' },
+
+    // === SCHWA GROUP ===
+    e: { urdu: 'اَ', harakat: 'زبر', note: 'Schwa [ə] – Zabar' },
+    ei: { urdu: 'اے', note: 'e + i glide' },
+    er: { urdu: 'اَر', harakat: 'زبر', note: 'Retroflex schwa' },
+
+    // === O GROUP ===
+    o: { urdu: 'او', note: 'Back rounded' },
+    ou: { urdu: 'اوُ', harakat: 'پیش', note: 'o + u glide' },
+
+    // === NASAL -N FINALS (Use Jazam ْ) ===
+    an: { urdu: 'اَنْ', harakat: 'زبر+جزم', note: 'Schwa + nasal stop' },
+    en: { urdu: 'اَنْ', harakat: 'زبر+جزم', note: 'Schwa [ə] + n' },
+    in: { urdu: 'یِنْ', harakat: 'زیر+جزم', note: 'High front + nasal' },
+
+    // === NASAL -NG FINALS (Use Noon Ghunnah ں) ===
+    ang: { urdu: 'آں', harakat: 'نون غنّہ', note: 'Velar nasal [ŋ] – no hard g' },
+    eng: { urdu: 'اَں', harakat: 'زبر+نون غنّہ', note: 'Schwa + velar nasal' },
+    ong: { urdu: 'وں', harakat: 'نون غنّہ', note: 'Rounded + velar nasal' },
+
+    // === HIGH FRONT I GROUP ===
+    i: { urdu: 'ی', harakat: 'زیر', note: 'High front [i]. Buzz after z/c/s/zh/ch/sh/r' },
+    ia: { urdu: 'یا', note: 'i + a' },
+    iao: { urdu: 'یاو', note: 'i + a + o' },
+    ie: { urdu: 'یے', note: 'i + e' },
+    iou: { urdu: 'یو', note: 'Written as -iu' },
+    ian: { urdu: 'یَنْ', harakat: 'زبر+جزم', note: 'i + a + n' },
+    iang: { urdu: 'یاں', harakat: 'نون غنّہ', note: 'i + a + velar nasal' },
+    ing: { urdu: 'یں', harakat: 'نون غنّہ', note: 'i + velar nasal' },
+    iong: { urdu: 'یوں', harakat: 'نون غنّہ', note: 'i + rounded + velar nasal' },
+
+    // === HIGH BACK U GROUP ===
+    u: { urdu: 'و', harakat: 'پیش', note: 'High back rounded [u]' },
+    ua: { urdu: 'وا', note: 'u + a' },
+    uo: { urdu: 'وُو', note: 'u + o' },
+    uai: { urdu: 'وائی', note: 'u + a + i' },
+    uei: { urdu: 'وے', note: 'Written as -ui' },
+    uan: { urdu: 'وَنْ', harakat: 'زبر+جزم', note: 'u + a + n' },
+    uen: { urdu: 'وَنْ', harakat: 'زبر+جزم', note: 'Written as -un' },
+    uang: { urdu: 'واں', harakat: 'نون غنّہ', note: 'u + a + velar nasal' },
+    ueng: { urdu: 'وَں', harakat: 'نون غنّہ', note: 'u + velar nasal (rare)' },
+
+    // === FRONT ROUNDED Ü GROUP ===
+    ü: { urdu: 'یُو', harakat: 'پیش', note: 'French U – lips rounded, tongue high front' },
+    üe: { urdu: 'یُوے', note: 'ü + e' },
+    üan: { urdu: 'یُوَنْ', harakat: 'زبر+جزم', note: 'ü + a + n' },
+    ün: { urdu: 'یُنْ', harakat: 'جزم', note: 'ü + n' }
   }
 };
 
