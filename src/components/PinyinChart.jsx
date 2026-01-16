@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { initials, finals, isValidSyllable, getDisplayPinyin, getPhonetic, pronunciationNotations } from '../pinyinData';
+import { initials, finals, isValidSyllable, getDisplayPinyin, getPhonetic, getStandalone, pronunciationNotations, displayFinalMap } from '../pinyinData';
 import TonePopover from './ToneModal';
 
 const PinyinChart = ({ language, displayMode, onToggleMode }) => {
-    const [selectedCell, setSelectedCell] = useState(null); // { pinyin, phonetic, anchorPosition }
-    const [hoveredCell, setHoveredCell] = useState({ initial: null, final: null });
+    const [selectedCell, setSelectedCell] = useState(null);
+    const [hoveredCell, setHoveredCell] = useState({ initial: null, final: null, rowIndex: null });
 
     const handleCellClick = (e, pinyin, phonetic) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -15,47 +15,86 @@ const PinyinChart = ({ language, displayMode, onToggleMode }) => {
         });
     };
 
-    // Helper to render a cell
-    const renderCell = (initial, final) => {
-        const valid = isValidSyllable(initial, final);
+    // Helper to render a data cell
+    const renderCell = (initial, final, rowIndex) => {
+        const valid = isValidSyllable(initial, final, rowIndex);
 
-        // Highlight check logic
-        const isRowHovered = hoveredCell.final === final;
+        const isRowHovered = hoveredCell.rowIndex === rowIndex;
         const isColHovered = hoveredCell.initial === initial;
 
         if (!valid) {
             return (
                 <div
-                    key={`${initial}-${final}`}
+                    key={`${initial}-${final}-${rowIndex}`}
                     className={`cell empty-cell ${isRowHovered ? 'row-hover' : ''} ${isColHovered ? 'col-hover' : ''}`}
-                    onMouseEnter={() => setHoveredCell({ initial, final })}
-                    onMouseLeave={() => setHoveredCell({ initial: null, final: null })}
-                >
-                    {/* Empty */}
-                </div>
+                    onMouseEnter={() => setHoveredCell({ initial, final, rowIndex })}
+                    onMouseLeave={() => setHoveredCell({ initial: null, final: null, rowIndex: null })}
+                />
             );
         }
 
         const pinyin = getDisplayPinyin(initial, final);
         const phonetic = getPhonetic(initial, final, language, displayMode);
-
-        // Check active selection
         const isActive = selectedCell?.pinyin === pinyin;
 
         return (
             <div
-                key={`${initial}-${final}`}
+                key={`${initial}-${final}-${rowIndex}`}
                 className={`cell ${isActive ? 'cell-active' : ''} ${isRowHovered ? 'row-hover' : ''} ${isColHovered ? 'col-hover' : ''}`}
                 title={`${pinyin} = ${phonetic}`}
                 onClick={(e) => handleCellClick(e, pinyin, phonetic)}
-                onMouseEnter={() => setHoveredCell({ initial, final })}
-                onMouseLeave={() => setHoveredCell({ initial: null, final: null })}
+                onMouseEnter={() => setHoveredCell({ initial, final, rowIndex })}
+                onMouseLeave={() => setHoveredCell({ initial: null, final: null, rowIndex: null })}
             >
                 <div className="pinyin-text">{pinyin}</div>
                 <div className="phonetic-text">{phonetic}</div>
             </div>
         );
     };
+
+    // Render standalone cell (column 2)
+    const renderStandaloneCell = (final, rowIndex) => {
+        const standalone = getStandalone(final);
+        const isRowHovered = hoveredCell.rowIndex === rowIndex;
+
+        // Special first 'i' row has no standalone
+        if (standalone === null || standalone === undefined) {
+            return (
+                <div
+                    key={`standalone-${final}-${rowIndex}`}
+                    className={`cell empty-cell ${isRowHovered ? 'row-hover' : ''}`}
+                    onMouseEnter={() => setHoveredCell({ initial: null, final, rowIndex })}
+                    onMouseLeave={() => setHoveredCell({ initial: null, final: null, rowIndex: null })}
+                />
+            );
+        }
+
+        // Get phonetic for standalone (no initial)
+        const phonetic = pronunciationNotations.finals[final]?.[language] || '';
+        const isActive = selectedCell?.pinyin === standalone;
+
+        return (
+            <div
+                key={`standalone-${final}-${rowIndex}`}
+                className={`cell standalone-cell ${isActive ? 'cell-active' : ''} ${isRowHovered ? 'row-hover' : ''}`}
+                title={`${standalone} = ${phonetic}`}
+                onClick={(e) => handleCellClick(e, standalone, phonetic)}
+                onMouseEnter={() => setHoveredCell({ initial: null, final, rowIndex })}
+                onMouseLeave={() => setHoveredCell({ initial: null, final: null, rowIndex: null })}
+            >
+                <div className="pinyin-text">{standalone}</div>
+                <div className="phonetic-text">{phonetic}</div>
+            </div>
+        );
+    };
+
+    // Get display name for final header
+    const getDisplayFinal = (final) => {
+        return displayFinalMap[final] || final;
+    };
+
+    // Grid columns: corner + standalone + initials.length
+    const gridColumns = 2 + initials.length;
 
     return (
         <>
@@ -68,15 +107,15 @@ const PinyinChart = ({ language, displayMode, onToggleMode }) => {
             />
 
             <div className="chart-container">
-                <div className="pinyin-grid">
-                    {/* Top Left Corner - Toggle Mode */}
+                <div className="pinyin-grid" style={{ gridTemplateColumns: `repeat(${gridColumns}, 1fr)` }}>
+                    {/* Row 0: Header Row */}
+                    {/* Corner Cell - Toggle */}
                     <div
                         className="cell corner-cell corner-toggle"
                         onClick={onToggleMode}
                         title={`Click to ${displayMode === 'joined' ? 'Split' : 'Join'} Characters`}
                     >
                         {displayMode === 'joined' ? (
-                            // Show Split Action (Chain Broken?) or just Split Icon
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M8 12h8" strokeDasharray="2 2" />
                                 <path d="M4 12h2" />
@@ -84,7 +123,6 @@ const PinyinChart = ({ language, displayMode, onToggleMode }) => {
                                 <line x1="12" y1="9" x2="12" y2="15" />
                             </svg>
                         ) : (
-                            // Show Join Action (Chain Link)
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M7 12h10" />
                                 <path d="M7 12l-2 0" strokeLinecap="round" />
@@ -94,31 +132,38 @@ const PinyinChart = ({ language, displayMode, onToggleMode }) => {
                         )}
                     </div>
 
-                    {/* Header Row (Initials) */}
+                    {/* Empty cell for standalone column header */}
+                    <div className="cell header-row header-standalone">
+                        <div className="pinyin-text"></div>
+                    </div>
+
+                    {/* Initial Headers */}
                     {initials.map(initial => (
                         <div
                             key={initial}
                             className={`cell header-row ${hoveredCell.initial === initial ? 'header-highlight' : ''}`}
                         >
                             <div className="pinyin-text">{initial}</div>
-                            <div className="phonetic-text">{pronunciationNotations.initials[initial][language]}</div>
+                            <div className="phonetic-text">{pronunciationNotations.initials[initial]?.[language] || ''}</div>
                         </div>
                     ))}
 
-                    {/* Rows (Finals) */}
-                    {finals.map(final => (
-                        <React.Fragment key={final}>
-                            {/* Header Column (Final) */}
+                    {/* Data Rows */}
+                    {finals.map((final, rowIndex) => (
+                        <React.Fragment key={`row-${rowIndex}`}>
+                            {/* Final Header (Column 0) */}
                             <div
-                                className={`cell header-col ${hoveredCell.final === final ? 'header-highlight' : ''}`}
+                                className={`cell header-col ${hoveredCell.rowIndex === rowIndex ? 'header-highlight' : ''}`}
                             >
-                                <div className="pinyin-text">-{final}</div>
-                                <div className="phonetic-text">{pronunciationNotations.finals[final][language]}</div>
+                                <div className="pinyin-text">-{getDisplayFinal(final)}</div>
+                                <div className="phonetic-text">{pronunciationNotations.finals[final]?.[language] || ''}</div>
                             </div>
 
-                            {/* Data Cells (Iterate through Initials for this Final row) */}
-                            {initials.map(initial => renderCell(initial, final))}
+                            {/* Standalone Cell (Column 1) */}
+                            {renderStandaloneCell(final, rowIndex)}
 
+                            {/* Data Cells */}
+                            {initials.map(initial => renderCell(initial, final, rowIndex))}
                         </React.Fragment>
                     ))}
                 </div>

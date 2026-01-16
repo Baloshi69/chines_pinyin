@@ -300,6 +300,22 @@ main {
   pointer-events: none;
 }
 
+/* Standalone Column (Column 2) */
+.standalone-cell {
+  background: rgba(226, 132, 38, 0.08) !important;
+  border-color: rgba(226, 132, 38, 0.2) !important;
+}
+
+.standalone-cell .pinyin-text {
+  color: var(--primary) !important;
+  font-weight: 700;
+}
+
+.header-standalone {
+  background: #f1f5f9 !important;
+  min-width: 50px;
+}
+
 /* Premium Popover */
 .popover-backdrop {
   position: fixed;
