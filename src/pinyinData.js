@@ -141,7 +141,7 @@ const validCombinations = [
   'wa', 'wo', 'wai', 'wei', 'wan', 'wen', 'wang', 'weng', 'wu'
 ];
 
-export function getPhonetic(initialChar, finalChar, lang) {
+export function getPhonetic(initialChar, finalChar, lang, displayMode = 'joined') {
   const iData = pronunciationNotations.initials[initialChar];
   const fData = pronunciationNotations.finals[finalChar];
 
@@ -150,10 +150,12 @@ export function getPhonetic(initialChar, finalChar, lang) {
   const initialText = iData[lang] || '';
   const finalText = fData[lang] || '';
 
-  // Basic concatenation (Right-to-Left languages usually concatenate simply, but spacing might be needed)
-  // For display purposes, we might separate them with a + or space for clarity, 
-  // or join them if valid Urdu/Arabic. For learners, separated is often clearer.
-  return `${initialText} + ${finalText}`;
+  if (displayMode === 'separated') {
+    return `${initialText} + ${finalText}`;
+  }
+
+  // Default: joined
+  return `${initialText}${finalText}`;
 }
 
 export function getTones(pinyin) {
