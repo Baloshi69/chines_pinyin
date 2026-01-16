@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PinyinChart from './components/PinyinChart';
-import LanguageSelector from './components/LanguageSelector';
 
 
 function App() {
-  const [language, setLanguage] = useState('urdu');
   const [displayMode, setDisplayMode] = useState('joined'); // 'joined' | 'separated'
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -34,13 +32,12 @@ function App() {
               <button className="search-clear" onClick={() => setSearchQuery('')}>×</button>
             )}
           </div>
-          <LanguageSelector currentLang={language} onLanguageChange={setLanguage} />
         </div>
       </header>
 
-      <main className={`lang-${language}`}>
+      <main className="lang-urdu">
         <PinyinChart
-          language={language}
+          language="urdu"
           displayMode={displayMode}
           onToggleMode={() => setDisplayMode(prev => prev === 'joined' ? 'separated' : 'joined')}
           searchQuery={searchQuery}
