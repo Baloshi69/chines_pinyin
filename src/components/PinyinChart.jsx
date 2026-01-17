@@ -317,7 +317,10 @@ const PinyinChart = ({ language, displayMode, onToggleMode, searchQuery = '' }) 
                         className="header-tone-selector"
                         style={{
                             top: headerPlayback.anchorRect.bottom + 10,
-                            left: headerPlayback.anchorRect.left + (headerPlayback.anchorRect.width / 2) - 80,
+                            left: Math.max(10, Math.min(
+                                headerPlayback.anchorRect.left + (headerPlayback.anchorRect.width / 2) - 80, // 80 = half of 160px width
+                                window.innerWidth - 170 // 160 width + 10 margin
+                            )),
                         }}
                     >
                         <div className="header-tone-title">
